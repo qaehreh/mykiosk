@@ -1,20 +1,21 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import Payment from "../components/Payment.vue";
 
-// 연결할 각 컴포넌트 import (src/components폴더 아래 컴포넌트들 생성해둠)
-import TheWelcome from '../components/ShoppingCart.vue'
-import WelcomeItem from '../components/ShoppingCart.vue'
-
-// 라우터 설계
 const routes = [
-    { path: '/1', component:TheWelcome},
-    { path: '/2', component:WelcomeItem}
-]
+    {
+        path: "/",
+        name: "Home",
+        component: Home,
+    },
+    {
+        path: "/payment",
+        name: "Payment",
+        component: Payment,
+    },
+];
 
-// 라우터 생성
 const router = createRouter({
-    history: createWebHistory(),
-    routes
+    history: createWebHistory(process.env.BASE_URL),
+    routes,
 });
 
-// 라우터 추출 (main.js에서 import)
-export {router}
+export default router;

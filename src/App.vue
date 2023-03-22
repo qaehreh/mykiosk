@@ -5,11 +5,16 @@
         :cart="cart"
         @update-quantity="updateQuantity"
         @remove-item="removeItem"
+        @clear-cart="clearCart"
+        ref="shoppingCart"
     />
     <button @click="toggleVoiceRecognition">
       {{ voiceRecognitionActive ? '음성 인식 중지' : '음성 인식 시작' }}
     </button>
+    <div>장바구니에 담긴 상품 개수: {{ totalItemsInCart }}</div>
   </div>
+
+
 </template>
 
 <script>
@@ -22,6 +27,12 @@ export default {
     ProductList,
     ShoppingCart,
   },
+  mounted() {
+    window.addEventListener("keydown", this.handleKeyDown);
+  },
+  beforeUnmount() {
+    window.removeEventListener("keydown", this.handleKeyDown);
+  },
   data() {
     return {
       cart: [],
@@ -29,7 +40,22 @@ export default {
       recognition: null,
     };
   },
+  computed: {
+    //장바구니에 담긴 총개수
+    totalItemsInCart() {
+      return this.cart.reduce((sum, item) => sum + item.quantity, 0);
+    },
+  },
   methods: {
+    handleKeyDown(event) {
+      if (event.key === "/") {
+        event.preventDefault();
+        this.focusSearchInput();
+      }
+    },
+    focusSearchInput() {
+      this.$refs.productList.$refs.searchInput.focus();
+    },
     addToCart(product) {
       const index = this.cart.findIndex(item => item.product.id === product.id);
       if (index === -1) {
@@ -95,6 +121,26 @@ export default {
       if (command.startsWith("검색")) {
         const searchQuery = command.slice(2).trim();
         productList.search = searchQuery;
+      } else if (command.startsWith("추가")) {
+        const productName = command.slice(2).trim();
+        const matchedProduct = productList.products.find(product => productName === product.name);
+        if (matchedProduct) {
+          this.addToCart(matchedProduct);
+        }
+      } else if (command.startsWith("수량 변경")) {
+        const productName = command.split(" ")[2].trim();
+        const newQuantity = parseInt(command.split(" ")[3]);
+        const cartIndex = this.cart.findIndex(item => item.product.name === productName);
+        if (cartIndex !== -1 && !isNaN(newQuantity)) {
+          this.updateQuantity({ index: cartIndex, newQuantity });
+        }
+      } else if (command.startsWith("삭제")) {
+        const productName = command.slice(2).trim();
+        const cartIndex = this.cart.findIndex(item => item.product.name === productName);
+        if (cartIndex !== -1) {
+          this.removeItem(cartIndex);
+          this.speak(`${productName} 상품이 삭제되었습니다.`);
+        }
       } else {
         const matchedProduct = productList.products.find(product => command.includes(product.name));
         if (matchedProduct) {
@@ -102,6 +148,10 @@ export default {
         }
       }
     },
+    clearCart() {
+      this.cart = [];
+    },
+
   },
 };
 </script>
