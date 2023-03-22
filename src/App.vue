@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <ProductList @add-to-cart="addToCart" ref="productList" />
+    <ProductList @add-to-cart="addToCart" ref="productList" :purchase-history="purchaseHistory" />
     <ShoppingCart
         :cart="cart"
         @update-quantity="updateQuantity"
@@ -38,6 +38,7 @@ export default {
       cart: [],
       voiceRecognitionActive: false,
       recognition: null,
+      purchaseHistory: {},
     };
   },
   computed: {
@@ -47,6 +48,7 @@ export default {
     },
   },
   methods: {
+
     handleKeyDown(event) {
       if (event.key === "/") {
         event.preventDefault();
@@ -151,7 +153,25 @@ export default {
     clearCart() {
       this.cart = [];
     },
+    submitOrder() {
+      if (this.cart.length === 0) {
+        alert("장바구니가 비어 있습니다.");
+        return;
+      }
 
+      this.cart.forEach(item => {
+        if (!this.purchaseHistory[item.product.id]) {
+          this.purchaseHistory[item.product.id] = 0;
+        }
+        this.purchaseHistory[item.product.id] += item.quantity;
+      });
+      alert("주문이 완료되었습니다.");
+      this.$refs.shoppingCart.clearCart();
+    },
   },
 };
 </script>
+<style>
+
+
+</style>
