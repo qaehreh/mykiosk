@@ -35,6 +35,7 @@ export default {
       return this.cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
     },
   },
+
   methods: {
 
     removeItem(index) {

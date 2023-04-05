@@ -1,4 +1,6 @@
 <template>
+  <meta name = "mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="../manifest.json">
   <div id="app">
     <ProductList @add-to-cart="addToCart" ref="productList" :purchase-history="purchaseHistory" />
     <ShoppingCart
@@ -17,7 +19,7 @@
 
 </template>
 
-<script>
+  <script>
 import ProductList from "./components/ProductList.vue";
 import ShoppingCart from "./components/ShoppingCart.vue";
 
@@ -171,7 +173,6 @@ export default {
   },
 };
 </script>
-<style>
-
-
+<style lang="scss">
+@import "assets/css/app.scss";
 </style>
