@@ -6,22 +6,6 @@
 .main {
 
 
-  ul {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-
-    li {
-      width: 25%;
-      text-align: center;
-
-      a {
-        display: inline-block;
-        text-decoration: none;
-        color: #a2a2a2;
-      }
-    }
-  }
 
   @keyframes addedToCart {
     0% {
@@ -50,10 +34,19 @@
 
     }
   }
+  .leftBtn {
+    position: fixed;
+    top: 408px;
 
+  }
+  .rightBtn {
+    position: fixed;
+    top: 408px;
+    right: 21px;
+  }
   .serch {
     text-align: end;
-
+    padding: 68px;
     img {
       top: 4px;
       width: 18px;
@@ -73,24 +66,29 @@
     }
   }
 
-  .cart {
-    .pay {
-      text-align: center;
-
       .main-cart {
-        display: flex;
-        flex-wrap: wrap;
-
+        //display: flex; /* flexbox 설정 */
+        //flex-direction: row; /* 가로 방향으로 정렬 */
+        top: 100px;
+        img {
+          width: 100px;
+          height: 100px;
+          text-align: center;
+        }
+        .pay {
+          text-align: center;
+          display: block;
+        }
+        float: left;
         width: 25%;
+        flex-wrap: wrap;
+        height: 210px;
         text-align: center;
       }
-    }
+  .cart {
 
-    img {
-      width: 25%;
-      height: 35%;
-      text-align: center;
-    }
+
+
 
     button {
       border-radius: 100px;

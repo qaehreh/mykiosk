@@ -1,4 +1,5 @@
 import Payment from "../components/Payment.vue";
+import ShoppingCart from "../components/ShoppingCart.vue";
 
 const routes = [
     {
@@ -7,9 +8,9 @@ const routes = [
         component: Home,
     },
     {
-        path: "/payment",
-        name: "Payment",
-        component: Payment,
+        path: "/ShoppingCart",
+        name: "ShoppingCart",
+        component: ShoppingCart,
     },
 ];
 

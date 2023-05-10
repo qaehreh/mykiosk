@@ -10,10 +10,12 @@
         @clear-cart="clearCart"
         ref="shoppingCart"
     />
+
     <button @click="toggleVoiceRecognition">
       {{ voiceRecognitionActive ? '음성 인식 중지' : '음성 인식 시작' }}
     </button>
     <div>장바구니에 담긴 상품 개수: {{ totalItemsInCart }}</div>
+    <div>총가격: {{ total }}</div>
   </div>
 
 
@@ -30,7 +32,9 @@ export default {
     ShoppingCart,
   },
   mounted() {
+    this.speak(`엔터키를 입력해주세요`);
     window.addEventListener("keydown", this.handleKeyDown);
+
   },
   beforeUnmount() {
     window.removeEventListener("keydown", this.handleKeyDown);
@@ -48,6 +52,9 @@ export default {
     totalItemsInCart() {
       return this.cart.reduce((sum, item) => sum + item.quantity, 0);
     },
+    total() {
+      return this.cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    },
   },
   methods: {
 
@@ -60,6 +67,7 @@ export default {
     focusSearchInput() {
       this.$refs.productList.$refs.searchInput.focus();
     },
+
     addToCart(product) {
       const index = this.cart.findIndex(item => item.product.id === product.id);
       if (index === -1) {
