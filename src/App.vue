@@ -1,8 +1,14 @@
 <template>
   <meta name = "mobile-web-app-capable" content="yes">
   <link rel="manifest" href="../manifest.json">
+
   <div id="app">
+    <div v-if="show===true" @clear-cart="this.show=!this.show;">
     <ProductList @add-to-cart="addToCart" ref="productList" :purchase-history="purchaseHistory" />
+      <button @click="gogo">장바구니</button>
+
+    </div>
+    <div v-else>
     <ShoppingCart
         :cart="cart"
         @update-quantity="updateQuantity"
@@ -10,10 +16,12 @@
         @clear-cart="clearCart"
         ref="shoppingCart"
     />
+      <button @click="gogos">상품페이지</button>
+    </div>
 
-    <button @click="toggleVoiceRecognition">
-      {{ voiceRecognitionActive ? '음성 인식 중지' : '음성 인식 시작' }}
-    </button>
+<!--    <button @click="toggleVoiceRecognition">-->
+<!--      {{ voiceRecognitionActive ? '음성 인식 중지' : '음성 인식 시작' }}-->
+<!--    </button>-->
     <div>장바구니에 담긴 상품 개수: {{ totalItemsInCart }}</div>
     <div>총가격: {{ total }}</div>
   </div>
@@ -24,15 +32,16 @@
   <script>
 import ProductList from "./components/ProductList.vue";
 import ShoppingCart from "./components/ShoppingCart.vue";
-
+import mainPage from "./components/mainPage.vue";
 export default {
   name: "App",
   components: {
+
     ProductList,
     ShoppingCart,
   },
   mounted() {
-    this.speak(`엔터키를 입력해주세요`);
+
     window.addEventListener("keydown", this.handleKeyDown);
 
   },
@@ -41,13 +50,28 @@ export default {
   },
   data() {
     return {
+      show:true,
       cart: [],
       voiceRecognitionActive: false,
       recognition: null,
       purchaseHistory: {},
+      product: null, // 또는 초기값을 다른 것으로 설정
     };
   },
+  watch: {
+    show(newVal) {
+      if (newVal) {
+        this.speak("상품 페이지입니다.");
+      } else {
+        this.speak("장바구니 페이지입니다.");
+      }
+    },
+  },
+  // props: ['product'],
   computed: {
+    // product() {
+    //   // 여기에 product 계산 로직 작성
+    // },
     //장바구니에 담긴 총개수
     totalItemsInCart() {
       return this.cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -58,7 +82,48 @@ export default {
   },
   methods: {
 
+   gogo(product) {
+     if (this.totalItemsInCart === 0) {
+       this.speak("장바구니에 담긴 상품이 없습니다.");
+     }
+       else{
+        this.show=!this.show;
+         this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
+       }
+
+
+
+},
+    gogos(product){
+      if (this.totalItemsInCart === 0) {
+        this.speak("장바구니에 담긴 상품이 없습니다.");
+        this.show = !this.show;
+      } else {
+        this.show = !this.show;
+      }
+
+    },
     handleKeyDown(event) {
+      switch (event.key) {
+        case '1':
+          this.show = true;  // 상품 페이지 보이게 하기
+          break;
+        case '2':
+          if (this.totalItemsInCart === 0) {
+            this.speak("장바구니에 담긴 상품이 없습니다.");
+          } else if (this.show === true){
+            this.show = !this.show;
+            this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
+          } // 장바구니 보이게 하기
+          break;
+        case '3':
+          this.$refs.shoppingCart.submitOrder();
+          this.show = !this.show;// 주문하기 메소드 실행
+            this.clearCart()
+          break;
+        default:
+          break;
+      }
       if (event.key === "/") {
         event.preventDefault();
         this.focusSearchInput();
@@ -67,7 +132,9 @@ export default {
     focusSearchInput() {
       this.$refs.productList.$refs.searchInput.focus();
     },
-
+    // chargeInfo(product) {
+    //  this.speak(`장바구니에 담긴 상품은 총${product.totalItemsInCart}개이고 총가격은${product.total}원 입니다. `)
+    // },
     addToCart(product) {
       const index = this.cart.findIndex(item => item.product.id === product.id);
       if (index === -1) {
@@ -160,8 +227,10 @@ export default {
         }
       }
     },
+    // @clear-cart="this.show=!this.show;"
     clearCart() {
       this.cart = [];
+      this.show=!this.show;
     },
     submitOrder() {
       if (this.cart.length === 0) {

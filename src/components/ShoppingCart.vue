@@ -15,7 +15,7 @@
       <textarea v-model="orderNote" placeholder="요청사항을 입력해주세요." rows="3"></textarea>
     </div>
     <button @click="submitOrder">주문하기</button>
-    <div>총 가격: {{ total }}원</div>
+<!--    <div>총 가격: {{  total }}원</div>-->
   </div>
 </template>
 
@@ -26,8 +26,10 @@ export default {
   },
   data() {
     return {
+      show: false,
       timer: null,
       actions: [],
+      items: [],
       orderNote: "",
     };
   },
@@ -35,10 +37,13 @@ export default {
     total() {
       return this.cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
     },
+
   },
 
   methods: {
-
+    totalItemsInCart() {
+      return this.cart.reduce((sum, item) => sum + item.quantity, 0);
+    },
     removeItem(index) {
       this.actions.push(`${this.cart[index].product.name} 상품을 삭제했습니다.`);
       this.speakWithDelay();
@@ -72,20 +77,36 @@ export default {
     },
     submitOrder() {
       if (this.cart.length === 0) {
-        alert("장바구니가 비어 있습니다.");
-        return;
+
+        this.show = !this.show;
+
+       this.speak("장바구니가 비어있어 상품페이지로 이동했습니다.")
+        // this.$emit('cart-empty');
+
+
+      }else {
+        // this.$emit('cart-empty');
+        // this.speak("장바구니가 비어있어 상품페이지로 이동했습니다.")
+        // this.show = !this.show;
+
+
+        // 주문 정보 및 요청사항 출력
+        console.log("주문 정보:", this.cart);
+        console.log("요청사항:", this.orderNote);
+
+        // 주문 정보 및 요청사항을 서버로 전송하는 로직 추가
+        // ...
+
+        this.cart.forEach((item, index) => {
+          this.speak(`상품 ${index + 1}: ${item.product.name}, 개수: ${item.quantity}, 가격: ${item.product.price * item.quantity}원`);
+        });
+        this.speak(`총 가격: ${this.total}원 입니다.`);
+        this.$emit("clear-cart");
+        this.speak(`주문이 완료되었습니다.`);
+        this.orderNote = ""; // 요청사항을 초기화합니다.
+
+        this.show = !this.show;
       }
-
-      // 주문 정보 및 요청사항 출력
-      console.log("주문 정보:", this.cart);
-      console.log("요청사항:", this.orderNote);
-
-      // 주문 정보 및 요청사항을 서버로 전송하는 로직 추가
-      // ...
-
-      alert("주문이 완료되었습니다.");
-      this.$emit("clear-cart");
-      this.orderNote = ""; // 요청사항을 초기화합니다.
     },
   }
 };

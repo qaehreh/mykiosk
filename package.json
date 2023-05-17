@@ -10,11 +10,12 @@
   "dependencies": {
     "jquery": "^3.6.4",
     "vue": "^3.2.47",
-    "vue-router": "^4.0.13",
-    "vuex": "^4.0.2"
+    "vue-router": "^4.2.0",
+    "vuex": "^4.1.0",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.0.0",
+    "@vitejs/plugin-vue": "^4.2.3",
     "node-sass": "^8.0.0",
     "sass": "^1.60.0",
     "sass-loader": "^13.2.2",
