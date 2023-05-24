@@ -1,27 +1,28 @@
 <template>
-  <meta name = "mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <link rel="manifest" href="../manifest.json">
 
   <div id="app">
     <div v-if="show===true" @clear-cart="this.show=!this.show;">
-    <ProductList @add-to-cart="addToCart" ref="productList" :purchase-history="purchaseHistory" />
+      <ProductList @add-to-cart="addToCart" ref="productList" :purchase-history="purchaseHistory"/>
       <button @click="gogo">장바구니</button>
 
     </div>
+
     <div v-else>
-    <ShoppingCart
-        :cart="cart"
-        @update-quantity="updateQuantity"
-        @remove-item="removeItem"
-        @clear-cart="clearCart"
-        ref="shoppingCart"
-    />
+      <ShoppingCart
+          :cart="cart"
+          @update-quantity="updateQuantity"
+          @remove-item="removeItem"
+          @clear-cart="clearCart"
+          ref="shoppingCart"
+      />
       <button @click="gogos">상품페이지</button>
     </div>
 
-<!--    <button @click="toggleVoiceRecognition">-->
-<!--      {{ voiceRecognitionActive ? '음성 인식 중지' : '음성 인식 시작' }}-->
-<!--    </button>-->
+    <!--    <button @click="toggleVoiceRecognition">-->
+    <!--      {{ voiceRecognitionActive ? '음성 인식 중지' : '음성 인식 시작' }}-->
+    <!--    </button>-->
     <div>장바구니에 담긴 상품 개수: {{ totalItemsInCart }}</div>
     <div>총가격: {{ total }}</div>
   </div>
@@ -29,10 +30,11 @@
 
 </template>
 
-  <script>
+<script>
 import ProductList from "./components/ProductList.vue";
 import ShoppingCart from "./components/ShoppingCart.vue";
 import mainPage from "./components/mainPage.vue";
+
 export default {
   name: "App",
   components: {
@@ -50,7 +52,7 @@ export default {
   },
   data() {
     return {
-      show:true,
+      show: true,
       cart: [],
       voiceRecognitionActive: false,
       recognition: null,
@@ -82,19 +84,17 @@ export default {
   },
   methods: {
 
-   gogo(product) {
-     if (this.totalItemsInCart === 0) {
-       this.speak("장바구니에 담긴 상품이 없습니다.");
-     }
-       else{
-        this.show=!this.show;
-         this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
-       }
+    gogo(product) {
+      if (this.totalItemsInCart === 0) {
+        this.speak("장바구니에 담긴 상품이 없습니다.");
+      } else {
+        this.show = !this.show;
+        this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
+      }
 
 
-
-},
-    gogos(product){
+    },
+    gogos(product) {
       if (this.totalItemsInCart === 0) {
         this.speak("장바구니에 담긴 상품이 없습니다.");
         this.show = !this.show;
@@ -111,7 +111,7 @@ export default {
         case '2':
           if (this.totalItemsInCart === 0) {
             this.speak("장바구니에 담긴 상품이 없습니다.");
-          } else if (this.show === true){
+          } else if (this.show === true) {
             this.show = !this.show;
             this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
           } // 장바구니 보이게 하기
@@ -119,7 +119,7 @@ export default {
         case '3':
           this.$refs.shoppingCart.submitOrder();
           this.show = !this.show;// 주문하기 메소드 실행
-            this.clearCart()
+          this.clearCart()
           break;
         default:
           break;
@@ -138,14 +138,14 @@ export default {
     addToCart(product) {
       const index = this.cart.findIndex(item => item.product.id === product.id);
       if (index === -1) {
-        this.cart.push({ product, quantity: 1 });
+        this.cart.push({product, quantity: 1});
         this.speak(`${product.name} 상품이 1개 추가되었습니다.`);
       } else {
         this.cart[index].quantity += 1;
         this.speak(`${product.name} 상품이 ${this.cart[index].quantity}개로 변경되었습니다.`);
       }
     },
-    updateQuantity({ index, newQuantity }) {
+    updateQuantity({index, newQuantity}) {
       this.cart[index].quantity = newQuantity;
       this.speak(`${this.cart[index].product.name} 상품이 ${newQuantity}개로 변경되었습니다.`);
     },
@@ -211,7 +211,7 @@ export default {
         const newQuantity = parseInt(command.split(" ")[3]);
         const cartIndex = this.cart.findIndex(item => item.product.name === productName);
         if (cartIndex !== -1 && !isNaN(newQuantity)) {
-          this.updateQuantity({ index: cartIndex, newQuantity });
+          this.updateQuantity({index: cartIndex, newQuantity});
         }
       } else if (command.startsWith("삭제")) {
         const productName = command.slice(2).trim();
@@ -230,7 +230,7 @@ export default {
     // @clear-cart="this.show=!this.show;"
     clearCart() {
       this.cart = [];
-      this.show=!this.show;
+      this.show = !this.show;
     },
     submitOrder() {
       if (this.cart.length === 0) {

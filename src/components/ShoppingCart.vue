@@ -1,21 +1,21 @@
 <template>
   <div>
     <h2>장바구니</h2>
-<!--    <ul>-->
-      <div v-for="(item, index) in cart" :key="item.product.id">
-        <img :src="item.product.image" alt="상품 이미지" width="100" height="100" />
-         {{ item.product.name }} - {{ item.product.price }}원 x {{ item.quantity }}
-        <button @click="changeQuantity(index, item.quantity - 1)">-</button>
-        <button @click="changeQuantity(index, item.quantity + 1)">+</button>
-        <button @click="removeItem(index)">삭제</button>
-      </div>
-<!--    </ul>-->
+    <!--    <ul>-->
+    <div v-for="(item, index) in cart" :key="item.product.id">
+      <img :src="item.product.image" alt="상품 이미지" width="100" height="100"/>
+      {{ item.product.name }} - {{ item.product.price }}원 x {{ item.quantity }}
+      <button @click="changeQuantity(index, item.quantity - 1)">-</button>
+      <button @click="changeQuantity(index, item.quantity + 1)">+</button>
+      <button @click="removeItem(index)">삭제</button>
+    </div>
+    <!--    </ul>-->
     <div>
       <h3>요청사항</h3>
       <textarea v-model="orderNote" placeholder="요청사항을 입력해주세요." rows="3"></textarea>
     </div>
     <button @click="submitOrder">주문하기</button>
-<!--    <div>총 가격: {{  total }}원</div>-->
+    <!--    <div>총 가격: {{  total }}원</div>-->
   </div>
 </template>
 
@@ -80,11 +80,11 @@ export default {
 
         this.show = !this.show;
 
-       this.speak("장바구니가 비어있어 상품페이지로 이동했습니다.")
+        this.speak("장바구니가 비어있어 상품페이지로 이동했습니다.")
         // this.$emit('cart-empty');
 
 
-      }else {
+      } else {
         // this.$emit('cart-empty');
         // this.speak("장바구니가 비어있어 상품페이지로 이동했습니다.")
         // this.show = !this.show;

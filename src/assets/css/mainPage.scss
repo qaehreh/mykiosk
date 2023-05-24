@@ -1,10 +1,10 @@
 * {
-  button{
+  button {
     border-radius: 100px;
   }
 }
-.main {
 
+.main {
 
 
   @keyframes addedToCart {
@@ -34,19 +34,23 @@
 
     }
   }
+
   .leftBtn {
     position: fixed;
     top: 408px;
 
   }
+
   .rightBtn {
     position: fixed;
     top: 408px;
     right: 21px;
   }
+
   .serch {
     text-align: end;
     padding: 68px;
+
     img {
       top: 4px;
       width: 18px;
@@ -57,7 +61,7 @@
     }
 
     input {
-      width: 12%;
+      width: 40%;
       border: 1px solid #bbb;
       border-radius: 8px;
       padding: 10px 12px;
@@ -66,28 +70,30 @@
     }
   }
 
-      .main-cart {
-        //display: flex; /* flexbox 설정 */
-        //flex-direction: row; /* 가로 방향으로 정렬 */
-        top: 100px;
-        img {
-          width: 100px;
-          height: 100px;
-          text-align: center;
-        }
-        .pay {
-          text-align: center;
-          display: block;
-        }
-        float: left;
-        width: 25%;
-        flex-wrap: wrap;
-        height: 210px;
-        text-align: center;
-      }
+  .main-cart {
+    //display: flex; /* flexbox 설정 */
+    //flex-direction: row; /* 가로 방향으로 정렬 */
+    top: 100px;
+
+    img {
+      width: 100px;
+      height: 100px;
+      text-align: center;
+    }
+
+    .pay {
+      text-align: center;
+      display: block;
+    }
+
+    float: left;
+    width: 25%;
+    flex-wrap: wrap;
+    height: 210px;
+    text-align: center;
+  }
+
   .cart {
-
-
 
 
     button {
