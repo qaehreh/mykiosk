@@ -1,20 +1,33 @@
 <template>
-  <div>
+  <div class="shopping">
     <h2>장바구니</h2>
     <!--    <ul>-->
-    <div v-for="(item, index) in cart" :key="item.product.id">
-      <img :src="item.product.image" alt="상품 이미지" width="100" height="100"/>
-      {{ item.product.name }} - {{ item.product.price }}원 x {{ item.quantity }}
+    <div class="contain">
+
+      <button @click="changePage(currentPage - 1)" :disabled="currentPage <= 1">Previous</button>
+    <div class="cart-item" v-for="(item, index) in paginatedItems" :key="item.product.id">
+      <img class="cart-img" :src="item.product.image" alt="상품 이미지" />
+      <div>
+<!--       text-align: center;-->
+      </div>
+      <div class="price">
+        {{ item.product.price }}원
+      </div>
+      <div class="change">
+        {{ item.product.name}}
       <button @click="changeQuantity(index, item.quantity - 1)">-</button>
+      {{ item.quantity }}
       <button @click="changeQuantity(index, item.quantity + 1)">+</button>
       <button @click="removeItem(index)">삭제</button>
+      </div>
+    </div>
+      <button @click="changePage(currentPage + 1)" :disabled="currentPage >= totalPages">Next</button>
     </div>
     <!--    </ul>-->
     <div>
-      <h3>요청사항</h3>
       <textarea v-model="orderNote" placeholder="요청사항을 입력해주세요." rows="3"></textarea>
     </div>
-    <button @click="submitOrder">주문하기</button>
+    <button class="submit" @click="submitOrder">주문하기</button>
     <!--    <div>총 가격: {{  total }}원</div>-->
   </div>
 </template>
@@ -31,16 +44,42 @@ export default {
       actions: [],
       items: [],
       orderNote: "",
+      currentPage: 1,
+      itemsPerPage: 8,
     };
+  },
+  watch: {
+    cart: {
+      handler() {
+        if (this.cart.length === 0) {
+          this.show = !this.show;
+        }
+      },
+      immediate: true, // 컴포넌트가 생성될 때 `handler` 함수를 바로 실행합니다.
+    },
   },
   computed: {
     total() {
       return this.cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
     },
-
+    totalPages() {
+      return Math.ceil(this.cart.length / this.itemsPerPage);
+    },
+    paginatedItems() {
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.cart.slice(start, end);
+    },
   },
 
   methods: {
+
+    changePage(page) {
+      if (page < 1 || page > this.totalPages) {
+        return;
+      }
+      this.currentPage = page;
+    },
     totalItemsInCart() {
       return this.cart.reduce((sum, item) => sum + item.quantity, 0);
     },
@@ -50,9 +89,9 @@ export default {
       this.$emit("remove-item", index);
     },
     changeQuantity(index, newQuantity) {
-      const item = this.cart[index];
+      const item = this.cart[(this.currentPage - 1) * this.itemsPerPage + index];
       if (newQuantity >= 1) {
-        this.$emit("update-quantity", {index, newQuantity});
+        this.$emit("update-quantity", {index: (this.currentPage - 1) * this.itemsPerPage + index, newQuantity});
 
         // 음성 출력
         if (newQuantity > item.quantity) {

@@ -3,13 +3,26 @@
   <link rel="manifest" href="../manifest.json">
 
   <div id="app">
+  <div v-if="main===true" @changed="this.main=!this.main" >
+    <main-page @next="changed"></main-page>
+  </div>
+
+<div v-else>
     <div v-if="show===true" @clear-cart="this.show=!this.show;">
+      <button @click="changed">프로덕트</button>
       <ProductList @add-to-cart="addToCart" ref="productList" :purchase-history="purchaseHistory"/>
       <button @click="gogo">장바구니</button>
+      <p class="shop-count">
+        상품수: {{ totalItemsInCart }}
+      </p>
 
+      <p class="shop-count">
+        총가격: {{ total }}원
+      </p>
     </div>
 
     <div v-else>
+      <button @click="gogos">상품페이지</button>
       <ShoppingCart
           :cart="cart"
           @update-quantity="updateQuantity"
@@ -17,16 +30,33 @@
           @clear-cart="clearCart"
           ref="shoppingCart"
       />
-      <button @click="gogos">상품페이지</button>
+
+      <div  class="total" >
+
+        <p class="shop-count">
+          상품수: {{ totalItemsInCart }}
+        </p>
+
+        <p class="shop-count">
+          총가격: {{ total }}원
+        </p>
+      </div>
     </div>
 
     <!--    <button @click="toggleVoiceRecognition">-->
     <!--      {{ voiceRecognitionActive ? '음성 인식 중지' : '음성 인식 시작' }}-->
     <!--    </button>-->
-    <div>장바구니에 담긴 상품 개수: {{ totalItemsInCart }}</div>
-    <div>총가격: {{ total }}</div>
-  </div>
+<!--    <div>-->
+<!--      <p>-->
+<!--        총가격: {{ totalItemsInCart }}-->
+<!--      </p>-->
 
+<!--      <p>-->
+<!--        총가격: {{ total }}-->
+<!--      </p>-->
+<!--    </div>-->
+  </div>
+</div>
 
 </template>
 
@@ -38,7 +68,7 @@ import mainPage from "./components/mainPage.vue";
 export default {
   name: "App",
   components: {
-
+    mainPage,
     ProductList,
     ShoppingCart,
   },
@@ -52,6 +82,7 @@ export default {
   },
   data() {
     return {
+      main: true,
       show: true,
       cart: [],
       voiceRecognitionActive: false,
@@ -61,6 +92,15 @@ export default {
     };
   },
   watch: {
+    cart: {
+      deep: true, // 배열 내부의 변경사항을 감지합니다.
+      handler() {
+        if (this.cart.length === 0) {
+          this.gogos();
+          this.speak("장바구니 상품을 전부 삭제하여 상품페이지로 이동했습니다.");
+        }
+      },
+    },
     show(newVal) {
       if (newVal) {
         this.speak("상품 페이지입니다.");
@@ -83,7 +123,9 @@ export default {
     },
   },
   methods: {
-
+  changed() {
+    this.main = !this.main;
+  },
     gogo(product) {
       if (this.totalItemsInCart === 0) {
         this.speak("장바구니에 담긴 상품이 없습니다.");
