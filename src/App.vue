@@ -8,6 +8,11 @@
   </div>
 
 <div v-else>
+  <div v-if="place === true" @place="this.place=!this.place" >
+    <Place @select="Place" ></Place>
+  </div>
+<div v-else>
+
     <div v-if="show===true" @clear-cart="this.show=!this.show;">
       <button @click="changed">프로덕트</button>
       <ProductList @add-to-cart="addToCart" ref="productList" :purchase-history="purchaseHistory"/>
@@ -42,6 +47,7 @@
         </p>
       </div>
     </div>
+</div>
 
     <!--    <button @click="toggleVoiceRecognition">-->
     <!--      {{ voiceRecognitionActive ? '음성 인식 중지' : '음성 인식 시작' }}-->
@@ -64,6 +70,7 @@
 import ProductList from "./components/ProductList.vue";
 import ShoppingCart from "./components/ShoppingCart.vue";
 import mainPage from "./components/mainPage.vue";
+import Place from "./components/Place.vue";
 
 export default {
   name: "App",
@@ -71,6 +78,7 @@ export default {
     mainPage,
     ProductList,
     ShoppingCart,
+    Place,
   },
   mounted() {
 
@@ -82,6 +90,7 @@ export default {
   },
   data() {
     return {
+      place: true,
       main: true,
       show: true,
       cart: [],
@@ -89,6 +98,7 @@ export default {
       recognition: null,
       purchaseHistory: {},
       product: null, // 또는 초기값을 다른 것으로 설정
+      speakIntervalId: null,
     };
   },
   watch: {
@@ -100,6 +110,16 @@ export default {
           this.speak("장바구니 상품을 전부 삭제하여 상품페이지로 이동했습니다.");
         }
       },
+    },
+    main: {
+      handler(newVal) {
+        if (newVal) {
+          this.startSpeaking();
+        } else {
+          this.stopSpeaking();
+        }
+      },
+      immediate: true, // 컴포넌트가 마운트되면서 이 watch 핸들러를 한 번 실행합니다.
     },
     show(newVal) {
       if (newVal) {
@@ -123,9 +143,25 @@ export default {
     },
   },
   methods: {
+    startSpeaking() {
+      this.speakIntervalId = setInterval(() => {
+        this.speak("아무 키나 눌러주세요.");
+        console.log('Speaking.');  // 로그 추가
+      }, 5000); // 5초마다 반복
+    },
+
+    stopSpeaking() {
+      if (this.speakIntervalId) {
+        clearInterval(this.speakIntervalId);
+        console.log('Speaking stopped.');  // 로그 추가
+      }
+    },
   changed() {
     this.main = !this.main;
   },
+    Place() {
+     this.place = !this.place;
+    },
     gogo(product) {
       if (this.totalItemsInCart === 0) {
         this.speak("장바구니에 담긴 상품이 없습니다.");
@@ -146,6 +182,10 @@ export default {
 
     },
     handleKeyDown(event) {
+      if (this.main) {
+        this.changed();
+        return; // main이 true일 때는 다른 키보드 이벤트를 처리하지 않습니다.
+      }
       switch (event.key) {
         case '1':
           this.show = true;  // 상품 페이지 보이게 하기
@@ -162,6 +202,12 @@ export default {
           this.$refs.shoppingCart.submitOrder();
           this.show = !this.show;// 주문하기 메소드 실행
           this.clearCart()
+          break;
+        case '7':
+          this.place = !this.place;
+          break;
+        case '8':
+          this.place = !this.place;
           break;
         default:
           break;
