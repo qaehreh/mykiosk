@@ -13,13 +13,16 @@
   </div>
 <div v-else>
 
-    <div v-if="show===true" @clear-cart="this.show=!this.show;">
+    <div class="cartItem" v-if="show===true" @clear-cart="this.show=!this.show;">
       <button @click="changed">프로덕트</button>
       <ProductList @add-to-cart="addToCart" ref="productList" :purchase-history="purchaseHistory"/>
-      <button @click="gogo">장바구니</button>
-      <p class="shop-count">
-        상품수: {{ totalItemsInCart }}
+     <div class="cart-div">
+
+      <p class="shop-tot">
+        {{ totalItemsInCart }}
       </p>
+        <img class="cartBtn" src="/image/icon2.png" alt="" @click="gogo">
+     </div>
 
       <p class="shop-count">
         총가격: {{ total }}원
@@ -145,7 +148,7 @@ export default {
   methods: {
     startSpeaking() {
       this.speakIntervalId = setInterval(() => {
-        this.speak("아무 키나 눌러주세요.");
+        this.speak("아무거나 눌러주세요.");
         console.log('Speaking.');  // 로그 추가
       }, 5000); // 5초마다 반복
     },
