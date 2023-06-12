@@ -33,6 +33,7 @@
 </template>
 
 <script>
+
 export default {
   props: {
     cart: Array,
@@ -52,7 +53,7 @@ export default {
     cart: {
       handler() {
         if (this.cart.length === 0) {
-          this.show = !this.show;
+          this.show = true;
         }
       },
       immediate: true, // 컴포넌트가 생성될 때 `handler` 함수를 바로 실행합니다.
@@ -123,12 +124,8 @@ export default {
         // this.$emit('cart-empty');
 
 
-      } else {
-        // this.$emit('cart-empty');
-        // this.speak("장바구니가 비어있어 상품페이지로 이동했습니다.")
-        // this.show = !this.show;
-
-
+      }
+      else {
         // 주문 정보 및 요청사항 출력
         console.log("주문 정보:", this.cart);
         console.log("요청사항:", this.orderNote);
@@ -137,14 +134,12 @@ export default {
         // ...
 
         this.cart.forEach((item, index) => {
-          this.speak(`상품 ${index + 1}: ${item.product.name}, 개수: ${item.quantity}, 가격: ${item.product.price * item.quantity}원`);
+          this.speak(`상품 ${index + 1}: ${item.product.name}, 개수: ${item.quantity}, 가격: ${item.product.price * item.quantity}원 총 가격: ${this.total}원 입니다. 주문이 완료되었습니다.`);
         });
-        this.speak(`총 가격: ${this.total}원 입니다.`);
-        this.$emit("clear-cart");
-        this.speak(`주문이 완료되었습니다.`);
-        this.orderNote = ""; // 요청사항을 초기화합니다.
 
-        this.show = !this.show;
+        this.$emit('clearCart')
+
+
       }
     },
   }

@@ -13,16 +13,14 @@
   </div>
 <div v-else>
 
-    <div class="cartItem" v-if="show===true" @clear-cart="this.show=!this.show;">
+    <div v-if="show===true" @clear-cart="this.show=!this.show;">
       <button @click="changed">프로덕트</button>
+      <button @click="cg">프로덕트</button>
       <ProductList @add-to-cart="addToCart" ref="productList" :purchase-history="purchaseHistory"/>
-     <div class="cart-div">
-
-      <p class="shop-tot">
-        {{ totalItemsInCart }}
+      <button @click="gogo">장바구니</button>
+      <p class="shop-count">
+        상품수: {{ totalItemsInCart }}
       </p>
-        <img class="cartBtn" src="/image/icon2.png" alt="" @click="gogo">
-     </div>
 
       <p class="shop-count">
         총가격: {{ total }}원
@@ -30,13 +28,18 @@
     </div>
 
     <div v-else>
+      <div v-if="cttem===true">
+      </div>
+      <div>
       <button @click="gogos">상품페이지</button>
       <ShoppingCart
           :cart="cart"
+
           @update-quantity="updateQuantity"
           @remove-item="removeItem"
           @clear-cart="clearCart"
           ref="shoppingCart"
+
       />
 
       <div  class="total" >
@@ -48,6 +51,7 @@
         <p class="shop-count">
           총가격: {{ total }}원
         </p>
+      </div>
       </div>
     </div>
 </div>
@@ -93,25 +97,28 @@ export default {
   },
   data() {
     return {
-      place: true,
       main: true,
+      place: true,
       show: true,
+      cttem: true,
       cart: [],
       voiceRecognitionActive: false,
       recognition: null,
       purchaseHistory: {},
       product: null, // 또는 초기값을 다른 것으로 설정
       speakIntervalId: null,
+      isClearCartCalled: false,
     };
   },
   watch: {
     cart: {
       deep: true, // 배열 내부의 변경사항을 감지합니다.
       handler() {
-        if (this.cart.length === 0) {
-          this.gogos();
+        if (this.cart.length === 0 && this.show=== false && this.isClearCartCalled === false ) {
+          this.show=true  ;
           this.speak("장바구니 상품을 전부 삭제하여 상품페이지로 이동했습니다.");
         }
+        this.isClearCartCalled = false;
       },
     },
     main: {
@@ -146,29 +153,43 @@ export default {
     },
   },
   methods: {
+cg() {
+  console.log(this.main)
+},
     startSpeaking() {
+      // 실행 중인 인터벌이 있다면 정지시킵니다.
+      if (this.speakIntervalId) {
+        clearInterval(this.speakIntervalId);
+        this.speakIntervalId = null;
+      }
+
       this.speakIntervalId = setInterval(() => {
-        this.speak("아무거나 눌러주세요.");
-        console.log('Speaking.');  // 로그 추가
-      }, 5000); // 5초마다 반복
+        this.speak("음성을 따라 주문해 주세요 아무 키나 눌러주세요.");
+        console.log('Speaking.');
+      }, 15000);
     },
 
     stopSpeaking() {
-      if (this.speakIntervalId) {
-        clearInterval(this.speakIntervalId);
-        console.log('Speaking stopped.');  // 로그 추가
-      }
+      clearInterval(this.speakIntervalId);
+      console.log('stopSpeaking.');// setInterval을 중단합니다.
     },
   changed() {
-    this.main = !this.main;
+    console.log(this.main)
+    this.main = false;
+    console.log(this.main)
   },
     Place() {
      this.place = !this.place;
     },
+    cttem() {
+      this.cttem = !this.cttem;
+    },
     gogo(product) {
       if (this.totalItemsInCart === 0) {
+
         this.speak("장바구니에 담긴 상품이 없습니다.");
       } else {
+
         this.show = !this.show;
         this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
       }
@@ -203,19 +224,20 @@ export default {
           break;
         case '3':
           this.$refs.shoppingCart.submitOrder();
-          this.show = !this.show;// 주문하기 메소드 실행
-          this.clearCart()
+          // this.show = !this.show;// 주문하기 메소드 실행
+          // this.clearCart()
           break;
         case '7':
-          this.place = !this.place;
+          this.place = false;
           break;
         case '8':
-          this.place = !this.place;
+          this.place = false;
           break;
         default:
           break;
       }
       if (event.key === "/") {
+        this.speak("검색할 상품을 입력후 엔터를 눌러주세요")
         event.preventDefault();
         this.focusSearchInput();
       }
@@ -243,10 +265,19 @@ export default {
     removeItem(index) {
       this.cart.splice(index, 1);
     },
-    speak(message) {
-      const utterance = new SpeechSynthesisUtterance(message);
-      utterance.lang = "ko-KR";
-      speechSynthesis.speak(utterance);
+    speak(text) {
+
+      setTimeout(() => {
+        let voices = window.speechSynthesis.getVoices();
+
+        // 첫 번째 음성을 선택합니다.
+        let selectedVoice = voices[50];  // 이 값을 변경하여 다른 음성을 선택할 수 있습니다.
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.voice = selectedVoice;  // 선택한 음성을 설정합니다.
+        utterance.lang = "ko-KR";
+        window.speechSynthesis.speak(utterance);
+      }, 100); // 100밀리세컨드 딜레이를 추가합니다.
     },
     toggleVoiceRecognition() {
       if (this.voiceRecognitionActive) {
@@ -320,24 +351,31 @@ export default {
     },
     // @clear-cart="this.show=!this.show;"
     clearCart() {
+      console.log(this.isClearCartCalled);
+      this.isClearCartCalled = true;
       this.cart = [];
-      this.show = !this.show;
-    },
-    submitOrder() {
-      if (this.cart.length === 0) {
-        alert("장바구니가 비어 있습니다.");
-        return;
-      }
+      this.main = true;
+      this.place = true;
+      this.show = true;
 
-      this.cart.forEach(item => {
-        if (!this.purchaseHistory[item.product.id]) {
-          this.purchaseHistory[item.product.id] = 0;
-        }
-        this.purchaseHistory[item.product.id] += item.quantity;
-      });
-      alert("주문이 완료되었습니다.");
-      this.$refs.shoppingCart.clearCart();
+      console.log("클리어카트")
+      console.log(this.isClearCartCalled);
     },
+    // submitOrder() {
+    //   if (this.cart.length === 0) {
+    //     alert("장바구니가 비어 있습니다.");
+    //     return;
+    //   }
+    //
+    //   this.cart.forEach(item => {
+    //     if (!this.purchaseHistory[item.product.id]) {
+    //       this.purchaseHistory[item.product.id] = 0;
+    //     }
+    //     this.purchaseHistory[item.product.id] += item.quantity;
+    //   });
+    //   alert("주문이 완료되었습니다.");
+    //   this.$refs.shoppingCart.clearCart();
+    // },
   },
 };
 

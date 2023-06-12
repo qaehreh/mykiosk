@@ -1,20 +1,95 @@
 <template>
+  <head><meta charset="UTF-8"></head>
+  <body>
   <div>
-    <h1>결제하기</h1>
-<!--    <p>총 가격: {{ total }}원</p>-->
+    <h1>결제 방식을 선택해 주세요</h1>
+    <div class="choose1">
+      <div>
+        <tr>
+          <td><b>현금</b></td>
+        </tr>
+      </div><br>
+      <button class="li-bt w-bt">
+        <img alt="menu" src="/image/icon8.png" />
+      </button>
+      <br><br>카운터에서<br>결제해 주세요
+    </div>
+    <div class="choose2">
+      <div>
+        <tr>
+          <td><b>카드</b></td>
+        </tr>
+      </div><br>
+      <button class="li-bt w-bt" >
+        <img alt="menu" src="/image/icon9.png" />
+      </button>
+      <br><br>신용·체크카드<br>(삼성페이) / 모바일 쿠폰
+    </div>
   </div>
+
+  </body>
 </template>
 
 <script>
-// export default {
-//   name: "Payment",
-//   data() {
-//     return {
-//       total: 0,
-//     };
-//   },
-//   created() {
-//     this.total = this.$route.query.total || 0;
-//   },
-// };
+export default {
+  name: 'payPage',
+  data(){
+    return{
+    }
+  },
+  methods: {
+    goTo:function (v){
+      this.$router.push(v);
+    },
+
+
+  },
+  components: {
+  }
+}
 </script>
+
+<style>
+body {
+  width: 100%;
+  margin: 0px auto;
+}
+h1{
+  margin-top: 8%;
+  font-size: 30pt;
+  float: center;
+}
+/*버튼*/
+.choose1, .choose2 {
+  float: left;
+  margin-top: 3%;
+  margin-left: 12%;
+  font-size: 14mm;
+}
+.choose1 {
+  margin-left: 22%;
+}
+.li-bt{
+  position: relative;
+  padding: 3px 3px;
+  border-radius: 40px;
+  box-shadow: 0 15px 35px rbga(0, 0, 0, 0.2);
+  transition: 0.25s;
+  width: 250px;
+  height: 250px;
+  margin: 0px;
+}
+.li-bt:hover{
+  letter-spacing: 2px;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+.w-bt {
+  border: 2px solid #a3a1a1;
+  color: #ffffff;
+}
+img {
+  width: 200px;
+  height: 200px;
+}
+</style>
