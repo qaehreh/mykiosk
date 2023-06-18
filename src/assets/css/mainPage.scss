@@ -1,5 +1,5 @@
 * {
-
+  overflow-y: visible;
   button {
     border-radius: 100px;
   }
@@ -11,31 +11,95 @@
   font-style: normal;
 }
 body {
+  overflow-y: hidden;
+  overflow-x: hidden;
   font-family: 'KOFIHDrLEEJWTTF-B';
 }
 #app{
+  .prodPa {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 15px 100px;
+    position: absolute;
+    left: 747px;
+    top: 718px;
+    background: linear-gradient(108.73deg, #F9881F 23.73%, #FF774C 79.34%);
+    box-shadow: 0px 10px 30px rgba(202, 66, 17, 0.1);
+    border-radius: 20px;
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 36px;
+    line-height: 152.3%;
+    text-align: center;
+    letter-spacing: -0.01em;
+    color: #FFFFFF;
+    transition: all 0.2s linear;
+  }
+  .prodPa:hover {
+    transform: scale(1.1);
+  }
+.zangba {
+  position: fixed;
+  top: 859px;
+  left: 1241px;
+  border: none;
+  img{
+    width: 150px;
+    height: 130px;
 
-.total{        position: absolute;
-  width: 380px;
-  height: 127px;
+    position: relative;
+    transition: all 0.2s linear;
+  }
+  img:hover{
+    transform: scale(1.4);
+  }
+
+  p {
+    font-size: 30px;
+    font-family: 'KOFIHDrLEEJWTTF-B';
+  }
+}
+.total{
+  position: absolute;
+  width: 489px;
+  height: 278px;
   left: 1344px;
-  top: 733px;
+  top: 714px;
+  border: 2px solid #F5A62E;
+  border-radius: 20px;
+  .shop-count{
+    left: 100px;
+    top: 33px;
+    font-style: normal;
+    font-size: 56px;
+    line-height: 57px;
+    text-align: center;
+    letter-spacing: -0.03em;
+  }
+}
+}
+.tal {
+  position: absolute;
+  width: 489px;
+  height: 205px;
+  left: 318px;
+  top: 837px;
   border: 2px solid #F5A62E;
   border-radius: 20px;
 
-  //.shop-count{
-  //  left: 100px;
-  //  top: 33px;
-  //
-  //
-  //  font-style: normal;
-  //
-  //  font-size: 22px;
-  //  line-height: 28px;
-  //  text-align: center;
-  //  letter-spacing: -0.03em;
-  //}
-}
+  .shop-cou {
+    left: -3px;
+    top: -36px;
+    position: relative;
+    font-style: normal;
+    font-size: 56px;
+    line-height: 57px;
+    text-align: center;
+    letter-spacing: -0.03em;
+  }
 }
 .main {
 
@@ -56,75 +120,134 @@ body {
 
   .kate {
     text-align: center;
-
+  img {
+    position: relative;
+    width: 216px;
+    left: -108px;
+    top: 14px;
+  }
+    .selected-category {
+      background-color: #F5A62E;
+      transition: all 0.2s linear;
+    }
     button {
-      padding: 14px;
-      font-size: 20px;
-      margin: 15px;
-      width: 124px;
-      height: 57px;
+      border-radius: 26px;
+      width: 189px;
+      height: 67px;
+      top: -18px;
+      position: relative;
+      margin-left: 25px;
+      font-size: 35px;
+      margin-right: 25px;
+      background-color: #eee;
+      cursor: pointer;
+      outline: none;
+      box-shadow: 1px 4px 0 rgba(0, 0, 0, 0.5);
 
+    }
+    button:active {
+      box-shadow: 1px 1px 0 rgb(0,0,0,0.5);
+      position: relative;
+      top:-13px;
     }
   }
 
   .leftBtn {
     position: fixed;
-    top: 408px;
-
+    top: 400px;
+    left: 51px;
+    border: none;
+    .fa-caret-left {
+      font-size: 250px;
+      transition: all 0.2s linear;
+    }
+    .fa-caret-left:hover {
+      transform: scale(1.4);
+    }
   }
+
+
+
 
   .rightBtn {
     position: fixed;
-    top: 408px;
-    right: 21px;
+    top: 400px;
+    right: 81px;
+    border: none;
+    .fa-caret-right {
+      font-size: 250px;
+      transition: all 0.2s linear;
+    }
+    .fa-caret-right:hover {
+      transform: scale(1.4);
+    }
+
   }
 
   .serch {
+    padding-top: 43px;
+    position: relative;
     text-align: end;
-    padding: 68px;
 
     img {
-      top: 4px;
+      top: 1px;
       width: 18px;
       right: 38px;
       margin: 0;
-      left: 24px;
+      left: 37px;
       position: relative;
     }
 
     input {
-      width: 40%;
-      border: 1px solid #bbb;
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 14px;
+      width: 27%;
+      border: 3px solid #bbb;
+      border-radius: 13px;
+      padding: 5px 10px;
+      font-size: 24px;
       text-align: center;
     }
   }
+.cover {
+  position: relative;
+  width: 1544px;
+  left: 161px;
+  top: -67px;
 
   .main-cart {
     //display: flex; /* flexbox 설정 */
     //flex-direction: row; /* 가로 방향으로 정렬 */
-    top: 100px;
+
 
     img {
-      width: 100px;
-      height: 100px;
+      width: 138px;
+      height: 150px;
+      border: solid;
       text-align: center;
-    }
+      padding: 14px;
+      border-radius: 10px;
 
+      transform: scale(1);
+      -webkit-transition: .3s ease-in-out;
+      transition: .3s ease-in-out;
+    }
+img:hover {
+
+  transform: scale(0.9);
+}
     .pay {
       text-align: center;
       padding: 22px;
       display: block;
+      font-size: 30px;
     }
 
+    top: 100px;
     float: left;
     width: 25%;
-    flex-wrap: wrap;
+    position: relative;
     text-align: center;
   }
-
+}
   .cart {
 
 
@@ -149,79 +272,122 @@ body {
 //장바구니 css
 
 .shopping {
+
   textarea {
     position: absolute;
-    width: 469px;
-    height: 130px;
-    left: 58px;
-    top: 733px;
+    width: 489px;
+    height: 278px;
+    left: 90px;
+    font-size: 40px;
+    text-align: center;
+    top: 714px;
     border: 2px solid #F5A62E;
     border-radius: 20px;
+    line-height: 270px;
   }
   .contain {
- left: 100px;
+    position: relative;
+    left: 91px;
+    .LB-ton {
+      position: fixed;
+      top: 229px;
+      left: 10px;
+      border: none;
+      .fa-caret-left{
+        font-size: 250px;
+      }
+    }
+    .RB-ton {
+      position: fixed;
+      top: 229px;
+      right: 9px;
+      border: none;
+      .fa-caret-right {
+        font-size: 250px;
+      }
+    }
   .cart-item{
     float: left;
-    width: 243px;
-    border: solid;
+    height: 553px;
+    position: relative;
+    width: 312px;
+    top: -75px;
+    border: groove;
     margin: 3%;
     text-align: center;
+    border-radius: 20px;
+
     .price {
       color: red;
+      font-size: 50px;
+      position: relative;
+      top: 10px;
     }
       .cart-img {
 
-        width : 100px;
-        height: 130px;
+        width: 50%;
+        height: 50%;
       }
     .change {
       text-align: center;
+      position: relative;
+      top: 10px;
+      font-size: 50px;
+      .pluminu {
+        button{
+        font-family: 'KOFIHDrLEEJWTTF-B';
+        border: none;
+          i {
+            font-size: 30px;
+            transition: all 0.2s linear;
+          }
+          i:hover {
+            transform: scale(1.4);
+          }
+        }
+      }
+        .rmve {
+
+          position: relative;
+          border: none;
+          i {
+            font-size: 30px;
+            transition: all 0.2s linear;
+          }
+          i:hover {
+            transform: scale(1.4);
+          }
+        }
     }
   }
   }
   .submit {
-    /* Pay */
-
-    /* Auto layout */
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
     padding: 15px 100px;
-
     position: absolute;
-
-    left: 767px;
-    top: 756px;
-    /* primary gradient */
+    left: 759px;
+    top: 884px;
+    width: 355px;
     background: linear-gradient(108.73deg, #F9881F 23.73%, #FF774C 79.34%);
     box-shadow: 0px 10px 30px rgba(202, 66, 17, 0.1);
     border-radius: 20px;
-
-
-    /* 주문하기! */
-
-
-
-    font-family: 'Poppins';
+    transition: all 0.2s linear;
+    font-family: "Poppins";
     font-style: normal;
     font-weight: 600;
     font-size: 36px;
     line-height: 152.3%;
-    /* identical to box height, or 55px */
     text-align: center;
     letter-spacing: -0.01em;
-
     color: #FFFFFF;
 
-
-    /* Inside auto layout */
-    flex: none;
-    order: 0;
-    flex-grow: 0;
-
   }
-
+.submit:hover {
+  transform: scale(1.1);
+}
 }
 .main-info {
   float: left;

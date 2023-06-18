@@ -8,52 +8,78 @@
   </div>
 
 <div v-else>
-  <div v-if="place === true" @place="this.place=!this.place" >
-    <Place @select="Place" ></Place>
+
+
+  <!--    장소선택-->
+  <div v-if="place === true && toPlace === true"  >
+    <Place @select="Place" @selto="ToPlace" ></Place>
   </div>
-<div v-else>
+  <!--    장소선택-->
+ <div v-else-if="place===false && toPlace===false" >
 
+   <!--    프로덕트-->
+   <div v-if="show===true" @clear-cart="this.show=!this.show;">
+
+     <ProductList @add-to-cart="addToCart" ref="productList" :purchase-history="purchaseHistory"  :cart="cart"/>
+     <button class="zangba" @click="gogo"><img src="/image/icon2.png" alt="장바구니"><p>장바구니</p></button>
+   </div>
+   <!--    프로덕트-->
+
+   <!--    장바구니-->
+   <div v-else>
+     <div v-if="cttem===true">
+     </div>
+     <div>
+
+       <ShoppingCart
+           :cart="cart"
+           :gogos="gogos"
+           :totalItemsInCart="totalItemsInCart"
+           :total="total"
+           @update-quantity="updateQuantity"
+           @remove-item="removeItem"
+           @clear-cart="clearCart"
+           ref="shoppingCart"
+           @updateChashrap="handleChashrap"
+       />
+
+
+     </div>
+   </div>
+
+   <!--    장바구니-->
+ </div>
+  <div v-else>
+
+    <!--    프로덕트-->
     <div v-if="show===true" @clear-cart="this.show=!this.show;">
-      <button @click="changed">프로덕트</button>
-      <button @click="cg">프로덕트</button>
-      <ProductList @add-to-cart="addToCart" ref="productList" :purchase-history="purchaseHistory"/>
-      <button @click="gogo">장바구니</button>
-      <p class="shop-count">
-        상품수: {{ totalItemsInCart }}
-      </p>
 
-      <p class="shop-count">
-        총가격: {{ total }}원
-      </p>
+      <ProductList @add-to-cart="addToCart" ref="productList" :purchase-history="purchaseHistory"  :cart="cart"/>
+      <button class="zangba" @click="gogo"><img src="/image/icon2.png" alt="장바구니"><p>장바구니</p></button>
+
     </div>
+    <!--    프로덕트-->
 
+<!--    장바구니-->
     <div v-else>
       <div v-if="cttem===true">
       </div>
       <div>
-      <button @click="gogos">상품페이지</button>
       <ShoppingCart
           :cart="cart"
-
+          :gogos="gogos"
           @update-quantity="updateQuantity"
           @remove-item="removeItem"
           @clear-cart="clearCart"
           ref="shoppingCart"
-
+          @updateChashrap="handleChashrap"
       />
 
-      <div  class="total" >
-
-        <p class="shop-count">
-          상품수: {{ totalItemsInCart }}
-        </p>
-
-        <p class="shop-count">
-          총가격: {{ total }}원
-        </p>
-      </div>
       </div>
     </div>
+
+    <!--    장바구니-->
+
 </div>
 
     <!--    <button @click="toggleVoiceRecognition">-->
@@ -100,7 +126,9 @@ export default {
       main: true,
       place: true,
       show: true,
+      shows: true,
       cttem: true,
+      toPlace: true,
       cart: [],
       voiceRecognitionActive: false,
       recognition: null,
@@ -153,6 +181,15 @@ export default {
     },
   },
   methods: {
+    handleChashrap(chashrap) {
+      this.chashrap = chashrap;
+      this.someOtherMethod(chashrap); // chashrap 값에 따라 다른 메소드를 실행합니다.
+    },
+    someOtherMethod(chashrap) {
+      if (this.chashrap===true) {
+        this.chashrap=!this.chashrap
+    }
+    },
 cg() {
   console.log(this.main)
 },
@@ -174,27 +211,49 @@ cg() {
       console.log('stopSpeaking.');// setInterval을 중단합니다.
     },
   changed() {
-    console.log(this.main)
     this.main = false;
-    console.log(this.main)
+    this.speak("포장은칠번 매장이용은팔번을 눌러주세요.");
   },
     Place() {
-     this.place = !this.place;
+      this.isClearCartCalled = false;
+     this.place = !this.place
+      this.toPlace=true
+      this.speak("포장을 선택하셨습니다. /버튼을 누르시고 점자키보드로 매뉴검색을 해주세요");
+    },
+    ToPlace() {
+      this.isClearCartCalled = false;
+      this.toPlace = false;
+      this.place = !this.place;
+      this.speak("매장이용을 선택하셨습니다. /버튼을 누르시고 점자키보드로 매뉴검색을 해주세요");
     },
     cttem() {
       this.cttem = !this.cttem;
     },
     gogo(product) {
       if (this.totalItemsInCart === 0) {
-
         this.speak("장바구니에 담긴 상품이 없습니다.");
-      } else {
-
+      } else if (this.show === true) {
         this.show = !this.show;
         this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
+
+      } // 장바구니 보이게 하// 기
+      else {
+        this.shows = !this.shows;
+        this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
       }
+    },
+    gogose(product) {
+      if (this.totalItemsInCart === 0) {
+        this.speak("장바구니에 담긴 상품이 없습니다.");
+      } else if (this.show === true) {
+        this.show = !this.show;
+        this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
 
-
+      } // 장바구니 보이게 하// 기
+      else {
+        this.shows = !this.shows;
+        this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
+      }
     },
     gogos(product) {
       if (this.totalItemsInCart === 0) {
@@ -212,7 +271,9 @@ cg() {
       }
       switch (event.key) {
         case '1':
-          this.show = true;  // 상품 페이지 보이게 하기
+
+          this.show = true;// 상품 페이지 보이게 하기
+          this.shows = true;
           break;
         case '2':
           if (this.totalItemsInCart === 0) {
@@ -220,7 +281,12 @@ cg() {
           } else if (this.show === true) {
             this.show = !this.show;
             this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
-          } // 장바구니 보이게 하기
+
+          } // 장바구니 보이게 하// 기
+          else {
+            this.shows = !this.shows;
+            this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
+          }
           break;
         case '3':
           this.$refs.shoppingCart.submitOrder();
@@ -228,10 +294,10 @@ cg() {
           // this.clearCart()
           break;
         case '7':
-          this.place = false;
+          this.Place()
           break;
         case '8':
-          this.place = false;
+          this.ToPlace()
           break;
         default:
           break;
@@ -267,17 +333,17 @@ cg() {
     },
     speak(text) {
 
-      setTimeout(() => {
+
         let voices = window.speechSynthesis.getVoices();
 
         // 첫 번째 음성을 선택합니다.
-        let selectedVoice = voices[50];  // 이 값을 변경하여 다른 음성을 선택할 수 있습니다.
+        let selectedVoice = voices[0];  // 이 값을 변경하여 다른 음성을 선택할 수 있습니다.
 
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.voice = selectedVoice;  // 선택한 음성을 설정합니다.
         utterance.lang = "ko-KR";
         window.speechSynthesis.speak(utterance);
-      }, 100); // 100밀리세컨드 딜레이를 추가합니다.
+
     },
     toggleVoiceRecognition() {
       if (this.voiceRecognitionActive) {
@@ -351,15 +417,16 @@ cg() {
     },
     // @clear-cart="this.show=!this.show;"
     clearCart() {
-      console.log(this.isClearCartCalled);
+
       this.isClearCartCalled = true;
       this.cart = [];
       this.main = true;
       this.place = true;
       this.show = true;
-
-      console.log("클리어카트")
-      console.log(this.isClearCartCalled);
+      this.toPlace = true;
+      this.shows = true;
+      this.ptpers=true;
+      this.agweg=true;
     },
     // submitOrder() {
     //   if (this.cart.length === 0) {
@@ -382,4 +449,5 @@ cg() {
 </script>
 <style lang="scss">
 @import "assets/css/app.scss";
+
 </style>

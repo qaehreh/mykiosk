@@ -2,11 +2,12 @@
   <div class="main">
 
     <div class="kate">
-      <img src="" alt="">
+      <img src="/image/로고.png" alt="">
       <button
           v-for="category in categories"
           :key="category"
           @click="set(category)"
+          :class="{ 'selected-category': category === selectedCategory }"
       >
         {{ category }}
       </button>
@@ -29,7 +30,6 @@
       <div class="main-cart" v-for="product in paginatedProducts" :key="product.id">
         <!-- 이미지를 표시합니다. -->
         <!--    <ul>-->
-
         <img :src="product.image" @click="$emit('add-to-cart', product)" alt="상품 이미지" width="100" height="100"/>
         <div class="pay">
           {{ product.name }} - {{ product.price }}원
@@ -38,18 +38,19 @@
         <!--        <button @click="$emit('add-to-cart', product)">장바구니에 담기</button>-->
       </div>
     </div>
+
     <!--    </ul>-->
 
 
     <div id="cart" class="cart" data-totalitems="0">
-      <i class="fas fa-shopping-cart"></i>
+
     </div>
 
     <div>
-      <button class="leftBtn" @click="goToPreviousPage" :disabled="currentPage === 1">이전</button>
-      <span>{{ currentPage }} / {{ totalPages }}</span>
+      <button class="leftBtn" @click="goToPreviousPage" :disabled="currentPage === 1"><i class="fa-solid fa-caret-left"></i></button>
+<!--      <span>{{ currentPage }} / {{ totalPages }}</span>-->
 
-      <button class="rightBtn" @click="goToNextPage" :disabled="currentPage === totalPages">다음</button>
+      <button class="rightBtn" @click="goToNextPage" :disabled="currentPage === totalPages"><i class="fa-solid fa-caret-right"></i></button>
     </div>
     <!--    <shopping-cart-->
     <!--        :cart="cart"-->
@@ -61,6 +62,17 @@
 
 
   </div>
+  <div  class="tal" >
+
+    <p class="shop-cou">
+      상품수: {{ totalItemsInCart() }}
+    </p>
+
+    <p class="shop-cou">
+      총가격: {{ total }}원
+    </p>
+  </div>
+
 </template>
 
 <script>
@@ -74,11 +86,16 @@ export default {
   data() {
 
     return {
-      cart: [],
-      total: 0,
+
+      // total: Array,
       search: "",
+      timer: null,
+      actions: [],
+      items: [],
+      orderNote: "",
       currentPage: 1,
       itemsPerPage: 8,
+
       categories: ["전체 메뉴", "커피", "음료", "티", "디저트"],
       selectedCategory: "전체 메뉴",
       products: [
@@ -134,6 +151,7 @@ export default {
   },
   props: {
     purchaseHistory: Object,
+    cart: Array,
 
   },
   computed: {
@@ -142,18 +160,26 @@ export default {
     //   this.$emit("update-total", totalValue);
     //   return totalValue;
     // },
+    total() {
+      return this.cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    },
 
+    paginatedItems() {
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.cart.slice(start, end);
+    },
     paginatedProducts() {
       const start = (this.currentPage - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
       return this.filteredProducts.slice(start, end);
     },
     filteredProducts() {
+      let searchTerm = this.search.trim().toLowerCase().replace(/[()]/g, ""); // replace all parentheses with ''
       return this.products.filter(
           (product) =>
-              (this.search === "" || product.name.includes(this.search)) &&
+              (this.search === "" || product.name.toLowerCase().replace(/[()]/g, "").includes(searchTerm)) &&
               (this.selectedCategory === "전체 메뉴" || product.category === this.selectedCategory)
-
       );
     },
     totalPages() {
@@ -165,6 +191,9 @@ export default {
       this.selectedCategory = category;
       this.currentPage = 1;
       console.log(this.currentPage)
+    },
+    totalItemsInCart() {
+      return this.cart.reduce((sum, item) => sum + item.quantity, 0);
     },
     speak(message) {
       const utterance = new SpeechSynthesisUtterance(message);
@@ -193,9 +222,12 @@ export default {
           this.$refs.searchInput.blur();
 
         } else {
-          this.speak(`존재하지 않는 상품이거나 잘못입력하셨습니다. 다시 입력해 주세요`);
+          if (!/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(this.search.trim())) {
+            this.speak(`현재 키보드가 영어로 설정되어 있습니다. 한글로 변경해 주세요.`);
+          } else {
+            this.speak(`존재하지 않는 상품이거나 잘못입력하셨습니다. 다시 입력해 주세요`);
+          }
           this.search = ""; // 검색창을 비웁니다.
-          this.$refs.searchInput.blur();
         }
       }
     },
@@ -218,3 +250,26 @@ export default {
 };
 
 </script>
+<style scoped>
+/*#app .total {*/
+/*  position: absolute;*/
+/*  width: 489px;*/
+/*  height: 278px;*/
+/*  left: 1344px;*/
+/*  top: 714px;*/
+/*  border: 2px solid #F5A62E;*/
+/*  border-radius: 20px;*/
+/*}*/
+
+/*#app .total .shop-count {*/
+/*  left: 100px;*/
+/*  top: 33px;*/
+/*  font-style: normal;*/
+/*  font-size: 56px;*/
+/*  line-height: 57px;*/
+/*  text-align: center;*/
+/*  letter-spacing: -0.03em;*/
+/*}*/
+
+
+</style>

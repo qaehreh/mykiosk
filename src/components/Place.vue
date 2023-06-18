@@ -7,7 +7,7 @@
       </button>
       <br><br>포장
     </div>
-    <div class="choose2" @click="$emit('select')">
+    <div class="choose2" @click="$emit('selto')">
       <button class="li-bt w-bt">
         <img alt="menu" src="/image/icon7.png" />
       </button>
@@ -18,27 +18,5 @@
 </template>
 
 <script>
-export default {
-  methods: {
-    place() {
-      this.place = !this.place;
-    },
-    handleKeydown(e) {
-      if (e.keyCode === 55) { // ASCII for '7'
-        this.$refs.choose1.click();
-      } else if (e.keyCode === 56) { // ASCII for '8'
-        this.$refs.choose2.click();
-      }
-    },
-    handleClick(button) {
-      console.log(button + ' clicked');
-    },
-  },
-  mounted() {
-    window.addEventListener('keydown', this.handleKeydown);
-  },
-  beforeDestroy() {
-    window.removeEventListener('keydown', this.handleKeydown);
-  },
-};
+export default {}
 </script>

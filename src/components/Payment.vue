@@ -1,9 +1,9 @@
 <template>
   <head><meta charset="UTF-8"></head>
   <body>
-  <div>
+  <div v-if="ptpers===true">
     <h1>결제 방식을 선택해 주세요</h1>
-    <div class="choose1">
+    <div class="choose1" @click="chashHam">
       <div>
         <tr>
           <td><b>현금</b></td>
@@ -14,7 +14,7 @@
       </button>
       <br><br>카운터에서<br>결제해 주세요
     </div>
-    <div class="choose2">
+    <div class="choose2" @click="chashHamsa">
       <div>
         <tr>
           <td><b>카드</b></td>
@@ -26,6 +26,12 @@
       <br><br>신용·체크카드<br>(삼성페이) / 모바일 쿠폰
     </div>
   </div>
+  <div v-else-if="ptpers===false && agweg=== true">
+1
+  </div>
+  <div v-else>
+2
+  </div>
 
   </body>
 </template>
@@ -35,29 +41,63 @@ export default {
   name: 'payPage',
   data(){
     return{
+    ptpers:true,
+      agweg:true,
     }
+  },
+  components: {
+
+  },
+  props: {
+    submitOrder:Function,
+
+
   },
   methods: {
     goTo:function (v){
       this.$router.push(v);
     },
+    hamCha() {
+    this.ptpers = false;
+    this.agweg = true;
+    },
+    hanvhs() {
+      this.ptpers=false
+      this.agweg = false;
+    },
+    chashHam() {
+
+      this.hamCha();
+
+      setTimeout(() => {
+        this.submitOrder();
+      }, 10000);
+    },
+    chashHamsa() {
+
+      this.hanvhs();
+
+      setTimeout(() => {
+        this.submitOrder();
+      }, 10000);
+    },
 
 
   },
-  components: {
-  }
 }
 </script>
 
-<style>
+<style scoped>
 body {
   width: 100%;
   margin: 0px auto;
+
+
 }
 h1{
   margin-top: 8%;
   font-size: 30pt;
-  float: center;
+  text-align: center;
 }
 /*버튼*/
 .choose1, .choose2 {
@@ -65,9 +105,13 @@ h1{
   margin-top: 3%;
   margin-left: 12%;
   font-size: 14mm;
+  text-align: center;
+
 }
+
 .choose1 {
   margin-left: 22%;
+  text-align: center;
 }
 .li-bt{
   position: relative;
@@ -78,6 +122,7 @@ h1{
   width: 250px;
   height: 250px;
   margin: 0px;
+
 }
 .li-bt:hover{
   letter-spacing: 2px;
@@ -87,6 +132,7 @@ h1{
 .w-bt {
   border: 2px solid #a3a1a1;
   color: #ffffff;
+
 }
 img {
   width: 200px;

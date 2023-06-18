@@ -1,10 +1,10 @@
 <template>
-  <div class="shopping">
+  <div v-if="chashrap===true" class="shopping">
     <h2>장바구니</h2>
     <!--    <ul>-->
     <div class="contain">
 
-      <button @click="changePage(currentPage - 1)" :disabled="currentPage <= 1">Previous</button>
+      <button class="LB-ton" @click="changePage(currentPage - 1)" :disabled="currentPage <= 1"><i class="fa-solid fa-caret-left"></i></button>
     <div class="cart-item" v-for="(item, index) in paginatedItems" :key="item.product.id">
       <img class="cart-img" :src="item.product.image" alt="상품 이미지" />
       <div>
@@ -15,38 +15,65 @@
       </div>
       <div class="change">
         {{ item.product.name}}
-      <button @click="changeQuantity(index, item.quantity - 1)">-</button>
+        <div class="pluminu">
+      <button @click="changeQuantity(index, item.quantity - 1)"><i class="fa-solid fa-minus"></i></button>
       {{ item.quantity }}
-      <button @click="changeQuantity(index, item.quantity + 1)">+</button>
-      <button @click="removeItem(index)">삭제</button>
+      <button @click="changeQuantity(index, item.quantity + 1)"><i class="fa-solid fa-plus"></i></button>
+        </div>
+      <button class="rmve" @click="removeItem(index)"><i class="fa-solid fa-trash-can"></i></button>
       </div>
     </div>
-      <button @click="changePage(currentPage + 1)" :disabled="currentPage >= totalPages">Next</button>
+      <button class="RB-ton" @click="changePage(currentPage + 1)" :disabled="currentPage >= totalPages"><i class="fa-solid fa-caret-right"></i></button>
     </div>
     <!--    </ul>-->
     <div>
-      <textarea v-model="orderNote" placeholder="요청사항을 입력해주세요." rows="3"></textarea>
+      <textarea v-model="orderNote" placeholder="요청사항을 입력해주세요." maxlength="40" rows="1"  spellcheck="false"></textarea>
     </div>
-    <button class="submit" @click="submitOrder">주문하기</button>
+<!--    <button class="submit" @click="submitOrder">주문하기</button>-->
+    <button class="submit" @click="Chash">결제하기</button>
+    <div  class="total" >
+
+      <p class="shop-count">
+        상품수: {{ totalItemsInCart() }}
+      </p>
+
+      <p class="shop-count">
+        총가격: {{ total }}원
+      </p>
+    </div>
+    <button class="prodPa" @click="gogos">상품페이지</button>
     <!--    <div>총 가격: {{  total }}원</div>-->
+  </div>
+  <div v-else>
+  <Payment
+      :submitOrder="submitOrder"
+  ></Payment>
+
   </div>
 </template>
 
 <script>
-
+import Payment from"./Payment.vue";
 export default {
+  components: {
+    Payment,
+
+  },
   props: {
     cart: Array,
+    total: Number,  // Here
+    gogos: Function
   },
   data() {
     return {
+      chashrap:true,
       show: false,
       timer: null,
       actions: [],
       items: [],
       orderNote: "",
       currentPage: 1,
-      itemsPerPage: 8,
+      itemsPerPage: 4,
     };
   },
   watch: {
@@ -60,7 +87,7 @@ export default {
     },
   },
   computed: {
-    total() {
+    cartTotal() {
       return this.cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
     },
     totalPages() {
@@ -74,7 +101,10 @@ export default {
   },
 
   methods: {
-
+    Chash() {
+      this.chashrap=false
+      this.$emit('updateChashrap', this.chashrap);
+    },
     changePage(page) {
       if (page < 1 || page > this.totalPages) {
         return;
@@ -119,7 +149,7 @@ export default {
       if (this.cart.length === 0) {
 
         this.show = !this.show;
-
+        this.shows = !this.shows;
         this.speak("장바구니가 비어있어 상품페이지로 이동했습니다.")
         // this.$emit('cart-empty');
 
@@ -129,14 +159,15 @@ export default {
         // 주문 정보 및 요청사항 출력
         console.log("주문 정보:", this.cart);
         console.log("요청사항:", this.orderNote);
-
+        console.log(this.show ? "매장" : "포장");
+        console.log(this.cartTotal);
         // 주문 정보 및 요청사항을 서버로 전송하는 로직 추가
         // ...
 
         this.cart.forEach((item, index) => {
-          this.speak(`상품 ${index + 1}: ${item.product.name}, 개수: ${item.quantity}, 가격: ${item.product.price * item.quantity}원 총 가격: ${this.total}원 입니다. 주문이 완료되었습니다.`);
+          this.speak(`상품 ${index + 1}: ${item.product.name}, 개수: ${item.quantity}, 가격: ${item.product.price * item.quantity}원 총 가격: ${this.cartTotal}원 입니다. 주문이 완료되었습니다.`);
         });
-
+        console.log(this.cartTotal);
         this.$emit('clearCart')
 
 
@@ -145,3 +176,6 @@ export default {
   }
 };
 </script>
+<style>
+
+</style>
