@@ -27,7 +27,7 @@
     </div>
     <!--    </ul>-->
     <div>
-      <textarea v-model="orderNote" placeholder="요청사항을 입력해주세요." maxlength="40" rows="1"  spellcheck="false"></textarea>
+      <textarea ref="myTextarea" v-model="orderNote" placeholder="요청사항을 입력해주세요." maxlength="40" rows="15" spellcheck="false"></textarea>
     </div>
 <!--    <button class="submit" @click="submitOrder">주문하기</button>-->
     <button class="submit" @click="Chash">결제하기</button>
@@ -38,7 +38,7 @@
       </p>
 
       <p class="shop-count">
-        총가격: {{ total }}원
+        총가격: {{ this.cartTotal }}원
       </p>
     </div>
     <button class="prodPa" @click="gogos">상품페이지</button>
@@ -47,6 +47,7 @@
   <div v-else>
   <Payment
       :submitOrder="submitOrder"
+      ref="payment"
   ></Payment>
 
   </div>
@@ -66,6 +67,7 @@ export default {
   },
   data() {
     return {
+      text: '',
       chashrap:true,
       show: false,
       timer: null,
@@ -75,6 +77,13 @@ export default {
       currentPage: 1,
       itemsPerPage: 4,
     };
+  },
+  mounted() {
+    window.addEventListener('keydown', this.keydownHandler);
+
+  },
+  beforeDestroy() {
+    window.removeEventListener('keydown', this.keydownHandler);
   },
   watch: {
     cart: {
@@ -101,9 +110,22 @@ export default {
   },
 
   methods: {
+    keydownHandler(e) {
+      if (event.key === " " && this.chashrap===true && document.activeElement !== this.$refs.myTextarea) {
+        this.speak("요청사항입력후 엔터를 눌러주세요")
+        this.$refs.myTextarea.focus();
+      }
+      if (e.key === 'Enter'  && this.chashrap===true) {
+        this.speak("요청사항이 입력되었습니다 결제방법을 선택하시려면 삼번을 눌러주세요")
+        this.$refs.myTextarea.blur();
+      }
+    },
+
     Chash() {
+      this.speak("현금결제는 구번 카드결제는 영번을 눌러주세요.")
       this.chashrap=false
       this.$emit('updateChashrap', this.chashrap);
+
     },
     changePage(page) {
       if (page < 1 || page > this.totalPages) {
@@ -169,12 +191,15 @@ export default {
         });
         console.log(this.cartTotal);
         this.$emit('clearCart')
-
+        setTimeout(() => {
+          this.startSpeaking();
+        }, 2000);
 
       }
     },
   }
 };
+
 </script>
 <style>
 

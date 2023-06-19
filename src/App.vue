@@ -113,11 +113,7 @@ export default {
     ShoppingCart,
     Place,
   },
-  mounted() {
 
-    window.addEventListener("keydown", this.handleKeyDown);
-
-  },
   beforeUnmount() {
     window.removeEventListener("keydown", this.handleKeyDown);
   },
@@ -138,6 +134,7 @@ export default {
       isClearCartCalled: false,
     };
   },
+
   watch: {
     cart: {
       deep: true, // 배열 내부의 변경사항을 감지합니다.
@@ -150,14 +147,16 @@ export default {
       },
     },
     main: {
-      handler(newVal) {
-        if (newVal) {
+
+      handler(newValue) {
+        if (newValue) {
           this.startSpeaking();
-        } else {
+        }
+        else {
           this.stopSpeaking();
         }
       },
-      immediate: true, // 컴포넌트가 마운트되면서 이 watch 핸들러를 한 번 실행합니다.
+      immediate: true,  // 컴포넌트가 마운트되면서 이 watch 핸들러를 한 번 실행합니다.
     },
     show(newVal) {
       if (newVal) {
@@ -166,6 +165,19 @@ export default {
         this.speak("장바구니 페이지입니다.");
       }
     },
+  },
+  mounted() {
+    window.addEventListener("keydown", this.handleKeyDown);
+
+    // SpeechSynthesis API가 로드되었는지 확인합니다.
+    if ('speechSynthesis' in window) {
+      // 'voiceschanged' 이벤트를 기다립니다.
+      window.speechSynthesis.onvoiceschanged = () => {
+        this.startSpeaking();
+      };
+    } else {
+      console.error('SpeechSynthesis API is not supported in this browser.');
+    }
   },
   // props: ['product'],
   computed: {
@@ -180,7 +192,9 @@ export default {
       return this.cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
     },
   },
+
   methods: {
+
     handleChashrap(chashrap) {
       this.chashrap = chashrap;
       this.someOtherMethod(chashrap); // chashrap 값에 따라 다른 메소드를 실행합니다.
@@ -194,16 +208,17 @@ cg() {
   console.log(this.main)
 },
     startSpeaking() {
-      // 실행 중인 인터벌이 있다면 정지시킵니다.
+     this.main = true;
+      console.log('startSpeaking is called.');  // 이 부분 추가
       if (this.speakIntervalId) {
         clearInterval(this.speakIntervalId);
         this.speakIntervalId = null;
       }
 
-      this.speakIntervalId = setInterval(() => {
+      this.speakIntervalId = setTimeout(() => {
         this.speak("음성을 따라 주문해 주세요 아무 키나 눌러주세요.");
         console.log('Speaking.');
-      }, 15000);
+      }, 5000);
     },
 
     stopSpeaking() {
@@ -234,12 +249,12 @@ cg() {
         this.speak("장바구니에 담긴 상품이 없습니다.");
       } else if (this.show === true) {
         this.show = !this.show;
-        this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
+        this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다. 요청사항이있으면 spacebar를 눌러주세요`);
 
       } // 장바구니 보이게 하// 기
       else {
         this.shows = !this.shows;
-        this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
+        // this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다. 요청사항이있으면 t를 눌러주세요`);
       }
     },
     gogose(product) {
@@ -252,7 +267,7 @@ cg() {
       } // 장바구니 보이게 하// 기
       else {
         this.shows = !this.shows;
-        this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
+        // this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
       }
     },
     gogos(product) {
@@ -268,6 +283,8 @@ cg() {
       if (this.main) {
         this.changed();
         return; // main이 true일 때는 다른 키보드 이벤트를 처리하지 않습니다.
+      } else {
+        this.stopSpeaking();
       }
       switch (event.key) {
         case '1':
@@ -280,16 +297,16 @@ cg() {
             this.speak("장바구니에 담긴 상품이 없습니다.");
           } else if (this.show === true) {
             this.show = !this.show;
-            this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
+            this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다. 결제방법을 선택하시려면 삼번을 눌러주시고 요청사항이있으시면 spacebar를 눌러주세요`);
 
           } // 장바구니 보이게 하// 기
           else {
             this.shows = !this.shows;
-            this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다.`);
+            // this.speak(`장바구니에 담긴 상품은 총 ${this.totalItemsInCart}개이고, 총 가격은 ${this.total}원 입니다. 결제방법을 선택하시려면 삼번을 눌러주시고 요청사항이있으시면 spacebar를 눌러주세요`);
           }
           break;
         case '3':
-          this.$refs.shoppingCart.submitOrder();
+          this.$refs.shoppingCart.Chash();
           // this.show = !this.show;// 주문하기 메소드 실행
           // this.clearCart()
           break;
@@ -298,6 +315,21 @@ cg() {
           break;
         case '8':
           this.ToPlace()
+          break;
+        case '9':
+          this.cart.forEach((item, index) => {
+            this.speak(`현금결제를 선택하셨습니다 주문하신상품은 ${index + 1}: ${item.product.name}, 개수: ${item.quantity}, 가격: ${item.product.price * item.quantity}원 총 가격: ${this.total}원 입니다. 주문이 완료되었습니다.
+카운터에서 현금 결제를 해주세요.`);
+          });
+          this.$refs.shoppingCart.$refs.payment.chashHam()
+
+          break;
+        case '0':
+          this.cart.forEach((item, index) => {
+            this.speak(`카드결제를 선택하셨습니다. 주문하신상품은 ${index + 1}: ${item.product.name}, 개수: ${item.quantity}, 가격: ${item.product.price * item.quantity}원 총 가격: ${this.total}원 입니다. 결제가 완료되었습니다.
+카운터에서 제품을 수령해 주세요.`);
+          });
+          this.$refs.shoppingCart.$refs.payment.chashHamsa()
           break;
         default:
           break;
@@ -318,7 +350,7 @@ cg() {
       const index = this.cart.findIndex(item => item.product.id === product.id);
       if (index === -1) {
         this.cart.push({product, quantity: 1});
-        this.speak(`${product.name} 상품이 1개 추가되었습니다.`);
+        this.speak(`${product.name} 상품이 1개 추가되었습니다. 장바구니로가시려면 이번을 눌러주세요.`);
       } else {
         this.cart[index].quantity += 1;
         this.speak(`${product.name} 상품이 ${this.cart[index].quantity}개로 변경되었습니다.`);
@@ -337,7 +369,7 @@ cg() {
         let voices = window.speechSynthesis.getVoices();
 
         // 첫 번째 음성을 선택합니다.
-        let selectedVoice = voices[0];  // 이 값을 변경하여 다른 음성을 선택할 수 있습니다.
+        let selectedVoice = voices[-1];  // 이 값을 변경하여 다른 음성을 선택할 수 있습니다.
 
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.voice = selectedVoice;  // 선택한 음성을 설정합니다.
@@ -345,6 +377,7 @@ cg() {
         window.speechSynthesis.speak(utterance);
 
     },
+
     toggleVoiceRecognition() {
       if (this.voiceRecognitionActive) {
         this.stopVoiceRecognition();
@@ -420,7 +453,10 @@ cg() {
 
       this.isClearCartCalled = true;
       this.cart = [];
-      this.main = true;
+      setTimeout(() => {
+        this.main = true;
+      }, 1000);
+
       this.place = true;
       this.show = true;
       this.toPlace = true;

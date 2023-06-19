@@ -4,9 +4,9 @@
       주문이 완료되었습니다.
       <br />카운터에서 현금 결제를 해주세요.
     </h1>
-  </div>  
+  </div>
 </template>
- 
+
 <script>
 
   export default {
@@ -28,9 +28,12 @@ div {
   line-height: 100px;
 }
 h1 {
-  padding-top: 280px;
+  padding-top: 454px;
   text-align: center;
   font-size: 40pt;
+  left: 44px;
+  padding-left: 522px;
   margin: 0px;
+  position: relative;
 }
 </style>

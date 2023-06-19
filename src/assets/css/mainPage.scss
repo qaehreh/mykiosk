@@ -45,6 +45,7 @@ body {
   position: fixed;
   top: 859px;
   left: 1241px;
+  background-color: white;
   border: none;
   img{
     width: 150px;
@@ -154,11 +155,13 @@ body {
 
   .leftBtn {
     position: fixed;
+    background-color: white;
     top: 400px;
     left: 51px;
     border: none;
     .fa-caret-left {
       font-size: 250px;
+      background-color: white;
       transition: all 0.2s linear;
     }
     .fa-caret-left:hover {
@@ -173,6 +176,7 @@ body {
     position: fixed;
     top: 400px;
     right: 81px;
+    background-color: white;
     border: none;
     .fa-caret-right {
       font-size: 250px;
@@ -283,7 +287,15 @@ img:hover {
     top: 714px;
     border: 2px solid #F5A62E;
     border-radius: 20px;
-    line-height: 270px;
+
+  }
+  #myTextarea {
+    width: 489px;
+    height: 278px;
+    font-size: 40px;
+    text-align: center;
+    border: 2px solid #F5A62E;
+    border-radius: 20px;
   }
   .contain {
     position: relative;
@@ -293,11 +305,13 @@ img:hover {
       top: 229px;
       left: 10px;
       border: none;
+      background-color: white;
       .fa-caret-left{
         font-size: 250px;
       }
     }
     .RB-ton {
+      background-color: white;
       position: fixed;
       top: 229px;
       right: 9px;

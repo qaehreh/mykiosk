@@ -4,21 +4,20 @@
   <div v-if="ptpers===true">
     <h1>결제 방식을 선택해 주세요</h1>
     <div class="choose1" @click="chashHam">
-      <div>
-        <tr>
-          <td><b>현금</b></td>
-        </tr>
+      <div style="-webkit-box-align: center;" >
+       현금
+
       </div><br>
       <button class="li-bt w-bt">
         <img alt="menu" src="/image/icon8.png" />
       </button>
       <br><br>카운터에서<br>결제해 주세요
     </div>
-    <div class="choose2" @click="chashHamsa">
-      <div>
-        <tr>
-          <td><b>카드</b></td>
-        </tr>
+    <div class="choose2" @click="chashHamsa" >
+      <div >
+
+        카드
+
       </div><br>
       <button class="li-bt w-bt" >
         <img alt="menu" src="/image/icon9.png" />
@@ -27,16 +26,18 @@
     </div>
   </div>
   <div v-else-if="ptpers===false && agweg=== true">
-1
+  <finish-cash></finish-cash>
   </div>
   <div v-else>
-2
+    <fin-ish></fin-ish>
   </div>
 
   </body>
 </template>
-
+finIsh
 <script>
+import finishCash from "./finishCash.vue";
+import finIsh from "./finIsh.vue";
 export default {
   name: 'payPage',
   data(){
@@ -46,7 +47,8 @@ export default {
     }
   },
   components: {
-
+    finishCash,
+    finIsh,
   },
   props: {
     submitOrder:Function,
@@ -71,7 +73,7 @@ export default {
 
       setTimeout(() => {
         this.submitOrder();
-      }, 10000);
+      }, 5000);
     },
     chashHamsa() {
 
@@ -79,7 +81,7 @@ export default {
 
       setTimeout(() => {
         this.submitOrder();
-      }, 10000);
+      }, 5000);
     },
 
 
@@ -89,31 +91,37 @@ export default {
 
 <style scoped>
 body {
+
+
   width: 100%;
   margin: 0px auto;
 
 
 }
 h1{
+
   margin-top: 8%;
-  font-size: 30pt;
+  font-size: 46pt;
   text-align: center;
 }
 /*버튼*/
 .choose1, .choose2 {
+
   float: left;
   margin-top: 3%;
-  margin-left: 12%;
+  margin-left: 16%;
   font-size: 14mm;
   text-align: center;
 
 }
 
 .choose1 {
+
   margin-left: 22%;
   text-align: center;
 }
 .li-bt{
+
   position: relative;
   padding: 3px 3px;
   border-radius: 40px;
@@ -130,6 +138,7 @@ h1{
   cursor: pointer;
 }
 .w-bt {
+
   border: 2px solid #a3a1a1;
   color: #ffffff;
 
